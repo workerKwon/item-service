@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -75,12 +76,19 @@ public class BasicItemController {
         return "basic/item";
     }
 
-    @PostMapping("/add")
+//    @PostMapping("/add")
     public String saveV6(Item item) { // @ModelAttribute 생략 가능
         itemRepository.save(item);
         return "redirect:/basic/items/" + item.getId(); // PRG 패턴으로 Post 요청 후 새로고침 시 발생하는 문제점 수정.
     }
 
+    @PostMapping("/add")
+    public String saveV7(Item item, RedirectAttributes redirectAttributes) { // @ModelAttribute 생략 가능
+        Item savedItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", savedItem.getId()); // redirectAttribute를 사용하면 url에 값을 입력이 가능하다.
+        redirectAttributes.addAttribute("status", true); // url에서 호출하지 않은 값은 queryParameter로 들어간다.
+        return "redirect:/basic/items/{itemId}"; // PRG 패턴으로 Post 요청 후 새로고침 시 발생하는 문제점 수정.
+    }
 
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
