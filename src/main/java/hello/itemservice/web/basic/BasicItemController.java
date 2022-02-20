@@ -69,11 +69,18 @@ public class BasicItemController {
         return "basic/item";
     }
 
-    @PostMapping("/add")
+//    @PostMapping("/add")
     public String saveV5(Item item) { // @ModelAttribute 생략 가능
         itemRepository.save(item);
         return "basic/item";
     }
+
+    @PostMapping("/add")
+    public String saveV6(Item item) { // @ModelAttribute 생략 가능
+        itemRepository.save(item);
+        return "redirect:/basic/items/" + item.getId(); // PRG 패턴으로 Post 요청 후 새로고침 시 발생하는 문제점 수정.
+    }
+
 
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
